@@ -1,0 +1,59 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Connected Applications</h1>
+  </div>
+
+  <% if @application_connections.any? %>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold mb-4">Your Connected Applications</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <% @application_connections.each do |connection| %>
+          <div class="bg-white shadow rounded-lg p-6">
+            <div class="flex items-center mb-4">
+              <div class="bg-blue-100 p-3 rounded-lg mr-4">
+                <i class="fas fa-<%= connection.integration.logo %> text-blue-500"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold"><%= connection.integration.name %></h3>
+                <p class="text-sm text-gray-500"><%= connection.name %></p>
+              </div>
+            </div>
+            <div class="flex justify-between">
+              <%= link_to "View", application_connection_path(connection), class: "text-blue-500 hover:text-blue-700" %>
+              <%= button_to "Disconnect", application_connection_path(connection), method: :delete, 
+                  data: { confirm: "Are you sure you want to disconnect this application?" }, 
+                  class: "text-red-500 hover:text-red-700" %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+
+  <div>
+    <h2 class="text-xl font-semibold mb-4">Available Integrations</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <% @available_integrations.each do |integration| %>
+        <div class="bg-white shadow rounded-lg p-6">
+          <div class="flex items-center mb-4">
+            <div class="bg-blue-100 p-3 rounded-lg mr-4">
+              <i class="fas fa-<%= integration.logo %> text-blue-500"></i>
+            </div>
+            <div>
+              <h3 class="font-semibold"><%= integration.name %></h3>
+              <p class="text-sm text-gray-500"><%= integration.description %></p>
+            </div>
+          </div>
+          <% if current_user.integrations.include?(integration) %>
+            <span class="text-green-500">
+              <i class="fas fa-check-circle"></i> Connected
+            </span>
+          <% else %>
+            <%= link_to "Connect", new_application_connection_path(integration_id: integration.id), 
+                class: "inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
